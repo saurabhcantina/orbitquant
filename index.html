@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OrbitQuant</title>
+  <meta name="description" content="Data-agnostic weight-activation quantization for image and video diffusion transformers." />
+  <link rel="canonical" href="https://saurabhcantina.github.io/orbitquant/" />
+
+  <meta property="og:title" content="OrbitQuant" />
+  <meta property="og:description" content="Data-agnostic weight-activation quantization for image and video diffusion transformers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://saurabhcantina.github.io/orbitquant/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="OrbitQuant" />
+  <meta name="twitter:description" content="Data-agnostic weight-activation quantization for image and video diffusion transformers." />
+
+  <!-- Bulma + Font Awesome + Academicons (CDN). -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" />
+
+  <!-- Local overrides. -->
+  <link rel="stylesheet" href="static/css/index.css" />
+  <link rel="stylesheet" href="static/css/results-carousel.css" />
+  <link rel="stylesheet" href="static/css/teaser.css" />
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!--   HERO (title + authors + button row)                          -->
+  <!-- ============================================================ -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+
+            <h1 class="title publication-title">
+              <img src="static/images/orbit.svg" alt="OrbitQuant icon" style="height: 1.5em; vertical-align: -0.3em; margin-right: 0.3rem;" />OrbitQuant: Data-Agnostic Quantization for Image and Video Diffusion Transformers
+            </h1>
+            <div class="publication-authors" style="font-size: 1.2rem;">
+              <span class="author-block"><a href="https://donghyunli.github.io/" target="_blank" rel="noopener">Donghyun Lee</a><sup>1,2,†</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/jchavan24/" target="_blank" rel="noopener">Jitesh Chavan</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/duy-nguyen-31b5791b1/" target="_blank" rel="noopener">Duy Nguyen</a><sup>1,3</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/samhuang1223/" target="_blank" rel="noopener">Sam Huang</a><sup>1</sup>,</span>
+              <br>
+              <span class="author-block"><a href="https://liming-jiang.com/" target="_blank" rel="noopener">Liming Jiang</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/priyadarshini-panda-83985350/" target="_blank" rel="noopener">Priyadarshini Panda</a><sup>2</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/drshuklahere/" target="_blank" rel="noopener">Saurabh Shukla</a><sup>1,†</sup></span>
+            </div>
+
+            <div class="publication-authors" style="margin-top: 0.4rem; font-size: 1rem;">
+              <span class="author-block"><sup>1</sup>Cantina Labs&nbsp;&nbsp;</span>
+              <span class="author-block"><sup>2</sup>University of Southern California&nbsp;&nbsp;</span>
+              <span class="author-block"><sup>3</sup>University of Illinois Urbana-Champaign</span>
+            </div>
+
+            <div class="affil-logos" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.8rem 3rem; margin-top: 1.2rem;">
+              <img src="static/icon/cantina-trim.png" alt="Cantina Labs logo" style="height: 2.1rem; width: auto;" loading="lazy" decoding="async" />
+              <img src="static/icon/usc-trim.png" alt="University of Southern California logo" style="height: 2.9rem; width: auto;" loading="lazy" decoding="async" />
+              <img src="static/icon/uiuc-trim.png" alt="University of Illinois Urbana-Champaign logo" style="height: 2.7rem; width: auto;" loading="lazy" decoding="async" />
+            </div>
+
+            <div style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
+              <sup>†</sup>Correspondence to:
+              <a href="mailto:saurabh@cantina.ai">saurabh@cantina.ai</a>,
+              <a href="mailto:donghyun.lee.1@usc.edu">donghyun.lee.1@usc.edu</a>
+            </div>
+
+            <div class="publication-links" style="margin-top: 1rem;">
+
+              <!-- arXiv -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <!-- BibTeX -->
+              <span class="link-block">
+                <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-quote-right"></i></span>
+                  <span>BibTeX</span>
+                </a>
+              </span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--   TEASER / ABSTRACT                                            -->
+  <!-- ============================================================ -->
+  <section class="hero teaser" id="teaser">
+    <div class="container is-max-widescreen">
+      <div class="hero-body">
+
+        <div class="teaser-toggles">
+          <div class="teaser-pill teaser-pill-modality" role="tablist" aria-label="Teaser modality">
+            <button type="button" class="teaser-pill-btn" data-modality="images"><span class="icon is-small" style="margin-right:0.4rem;"><i class="far fa-image"></i></span>Images</button>
+            <button type="button" class="teaser-pill-btn is-active" data-modality="videos"><span class="icon is-small" style="margin-right:0.4rem;"><i class="fas fa-film"></i></span>Videos</button>
+          </div>
+          <div class="teaser-pill teaser-pill-backbone" data-for="images" role="tablist" aria-label="Image backbone" hidden>
+            <button type="button" class="teaser-pill-btn is-active" data-panel="flux">FLUX.1-dev</button>
+            <button type="button" class="teaser-pill-btn" data-panel="zimage">Z-Image-Turbo</button>
+          </div>
+          <div class="teaser-pill teaser-pill-backbone" data-for="videos" role="tablist" aria-label="Video backbone">
+            <button type="button" class="teaser-pill-btn is-active" data-panel="wan14b">Wan 2.1-14B</button>
+            <button type="button" class="teaser-pill-btn" data-panel="cogvideox">CogVideoX</button>
+          </div>
+        </div>
+
+        <p class="teaser-hint"><i class="fas fa-arrows-alt-h"></i>Drag the divider &mdash; BF16 on the left, OrbitQuant W4A4 on the right. Same recipe on every backbone.</p>
+
+        <div class="teaser-panel" data-panel="flux" data-modality="images" hidden>
+          <div class="teaser-grid">
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img src="static/images/teasers/FLUX/W4A4/studio portrait young woman.png" alt="OrbitQuant W4A4 (FLUX): studio portrait of a young woman with freckles" decoding="async" />
+              <div class="cmp-clip">
+                <img src="static/images/teasers/FLUX/bf16/studio portrait young woman.png" alt="BF16 (FLUX): studio portrait of a young woman with freckles" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A studio portrait of a young woman with freckles, natural skin texture, soft window lighting&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img src="static/images/teasers/FLUX/W4A4/knitted wool sweater.png" alt="OrbitQuant W4A4 (FLUX): knitted wool sweater texture" decoding="async" />
+              <div class="cmp-clip">
+                <img src="static/images/teasers/FLUX/bf16/knitted wool sweater.png" alt="BF16 (FLUX): knitted wool sweater texture" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A knitted wool sweater texture showing intricate patterns&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img src="static/images/teasers/w4a4/dandelion/orbitquant.png" alt="OrbitQuant W4A4: extreme macro photograph of a dandelion" decoding="async" />
+              <div class="cmp-clip">
+                <img src="static/images/teasers/w4a4/dandelion/bf16.png" alt="BF16: extreme macro photograph of a dandelion" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;Extreme macro photograph of a dandelion&rdquo;</figcaption>
+          </figure>
+          </div>
+        </div>
+
+        <div class="teaser-panel" data-panel="zimage" data-modality="images" hidden>
+          <div class="teaser-grid">
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img data-src="static/images/teasers/Z-Image/W4A4/water drop macro.png" alt="OrbitQuant W4A4 (Z-Image): high-speed macro shot of a water drop" decoding="async" />
+              <div class="cmp-clip">
+                <img data-src="static/images/teasers/Z-Image/bf16/water drop macro.png" alt="BF16 (Z-Image): high-speed macro shot of a water drop" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A high-speed macro shot of a single water drop&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img data-src="static/images/teasers/Z-Image/W4A4/peacock display.png" alt="OrbitQuant W4A4 (Z-Image): detailed close-up of a peacock displaying feathers" decoding="async" />
+              <div class="cmp-clip">
+                <img data-src="static/images/teasers/Z-Image/bf16/peacock display.png" alt="BF16 (Z-Image): detailed close-up of a peacock displaying feathers" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A detailed close-up of a peacock displaying its feathers&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 1 / 1;">
+              <img data-src="static/images/teasers/Z-Image/W4A4/old blacksmith portrait.png" alt="OrbitQuant W4A4 (Z-Image): close-up portrait of an old blacksmith" decoding="async" />
+              <div class="cmp-clip">
+                <img data-src="static/images/teasers/Z-Image/bf16/old blacksmith portrait.png" alt="BF16 (Z-Image): close-up portrait of an old blacksmith" decoding="async" />
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A close-up portrait of an old blacksmith&rdquo;</figcaption>
+          </figure>
+          </div>
+        </div>
+
+        <div class="teaser-panel" data-panel="cogvideox" data-modality="videos" hidden>
+          <div class="teaser-grid">
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 720 / 480;">
+              <video data-src="static/videos/teasers/cogvideox/OrbitQuant/waterfall_orbitquant_w4a4.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (cogvideox): A giant waterfall cascading into a jungle"></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/cogvideox/bf16/waterfall_bf16.mp4" muted loop playsinline preload="none" aria-label="BF16 (cogvideox): A giant waterfall cascading into a jungle"></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A giant waterfall cascading into a jungle&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 720 / 480;">
+              <video data-src="static/videos/teasers/cogvideox/OrbitQuant/black_stallion_orbitquant_w4a4.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (cogvideox): A black stallion gallops across an open field"></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/cogvideox/bf16/black_stallion_bf16.mp4" muted loop playsinline preload="none" aria-label="BF16 (cogvideox): A black stallion gallops across an open field"></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A black stallion gallops across an open field&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 720 / 480;">
+              <video data-src="static/videos/teasers/cogvideox/OrbitQuant/medieval_castle_orbitquant_w4a4.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (cogvideox): A medieval castle stands on a cliff during sunset"></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/cogvideox/bf16/medieval_castle_bf16.mp4" muted loop playsinline preload="none" aria-label="BF16 (cogvideox): A medieval castle stands on a cliff during sunset"></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A medieval castle stands on a cliff during sunset&rdquo;</figcaption>
+          </figure>
+          </div>
+        </div>
+
+        <div class="teaser-panel" data-panel="wan14b" data-modality="videos">
+          <div class="teaser-grid">
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 832 / 480;">
+              <video data-src="static/videos/teasers/wan14b/OrbitQuant/An astronaut is riding a horse in the space in a photorealistic style.-0.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (wan14b): An astronaut is riding a horse in the space in a photorealistic style."></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/wan14b/bf16/An astronaut is riding a horse in the space in a photorealistic style.-0.mp4" muted loop playsinline preload="none" aria-label="BF16 (wan14b): An astronaut is riding a horse in the space in a photorealistic style."></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;An astronaut is riding a horse in the space in a photorealistic style&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 832 / 480;">
+              <video data-src="static/videos/teasers/wan14b/OrbitQuant/A cat eating food out of a bowl-3.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (wan14b): A cat eating food out of a bowl"></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/wan14b/bf16/A cat eating food out of a bowl-3.mp4" muted loop playsinline preload="none" aria-label="BF16 (wan14b): A cat eating food out of a bowl"></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;A cat eating food out of a bowl&rdquo;</figcaption>
+          </figure>
+          <figure class="cmp">
+            <div class="cmp-media" style="aspect-ratio: 832 / 480;">
+              <video data-src="static/videos/teasers/wan14b/OrbitQuant/Sunset time lapse at the beach with moving clouds and colors in the sky.-2.mp4" muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (wan14b): Sunset time lapse at the beach with moving clouds and colors in the sky"></video>
+              <div class="cmp-clip">
+                <video data-src="static/videos/teasers/wan14b/bf16/Sunset time lapse at the beach with moving clouds and colors in the sky.-2.mp4" muted loop playsinline preload="none" aria-label="BF16 (wan14b): Sunset time lapse at the beach with moving clouds and colors in the sky"></video>
+              </div>
+              <span class="cmp-label cmp-label-l">BF16</span>
+              <span class="cmp-label cmp-label-r">W4A4 (Ours)</span>
+            <div class="cmp-handle" role="slider" tabindex="0" aria-label="Drag to compare BF16 and OrbitQuant W4A4" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="cmp-grip"><i class="fas fa-arrows-alt-h"></i></div>
+            </div>
+            </div>
+            <figcaption class="cmp-prompt">&ldquo;Sunset time lapse at the beach with moving clouds and colors in the sky&rdquo;</figcaption>
+          </figure>
+          </div>
+        </div>
+
+        <h2 class="subtitle has-text-centered teaser-tagline">
+          <span class="dnerf">OrbitQuant</span> &mdash; a single data-agnostic
+          weight-activation quantizer that transfers across image and video
+          diffusion transformers without per-modality calibration.
+        </h2>
+        <div class="teaser-chips">
+          <span class="teaser-chip">Calibration-free</span>
+          <span class="teaser-chip">Backbone-agnostic</span>
+          <span class="teaser-chip">W4A4 weights &amp; activations</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">Abstract</h2>
+      <p>
+        Diffusion transformers (DiTs) achieve state-of-the-art image and video
+        generation, but their multi-step sampling and growing parameter count make
+        inference expensive. Post-training quantization (PTQ) is the natural remedy,
+        yet DiT activations shift across timesteps, prompts, and guidance branches,
+        forcing prior methods to re-fit calibration data for every new checkpoint or
+        modality. We present <strong>OrbitQuant</strong>, a data-agnostic
+        weight-activation quantizer that bypasses range estimation by quantizing in a
+        normalized, rotated basis. In this basis, a randomized permuted block-Hadamard
+        (RPBH) rotation concentrates each coordinate around one fixed, known marginal
+        regardless of the input, so a single Lloyd&ndash;Max codebook serves all
+        timesteps, prompts, and layers of a given input dimension. We extend the same
+        quantizer to weight rows offline, absorbing the rotation into the weights so
+        that it cancels inside each linear layer and only a forward rotation on the
+        activations remains at runtime. The same recipe transfers from image to video
+        with no per-modality tuning. Across FLUX.1, Z-Image-Turbo, Wan&nbsp;2.1, and
+        CogVideoX, it sets the state of the art for PTQ at several low-bit settings.
+        It also pushes PTQ of image diffusion transformers to 2-bit weights and 4-bit
+        activations with usable generation quality.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--   METHOD / APPROACH                                            -->
+  <!-- ============================================================ -->
+  <!-- METHOD:BEGIN -->
+  <section class="section" id="method">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">Method</h2>
+
+      <figure class="figure-block" style="max-width: 120%; margin-left: -10%; margin-right: -10%;">
+        <img src="static/images/overall.png" alt="OrbitQuant method overview — RPBH rotation absorbed into weights, shared Lloyd-Max codebook for weights and activations"
+             loading="lazy" decoding="async" />
+      </figure>
+
+      <p>
+          <strong>Overview of OrbitQuant.</strong>
+          <strong>(1)</strong> DiT activations drift across timesteps and CFG branches,
+          so calibrated scales do not transfer.
+          <strong>(2)</strong> The RPBH rotation &Pi;<sub><em>d</em></sub> maps raw
+          activations to well-behaved coordinates. Folded into the weights, it cancels
+          inside each layer
+          (<strong>W&#770;&prime;x&#770;&prime;</strong>&thinsp;&approx;&thinsp;<strong>Wx</strong>).
+          <strong>(3)</strong> Rotated coordinates concentrate around one fixed marginal
+          <em>f</em><sub><em>d</em></sub>&thinsp;&approx;&thinsp;<em>N</em>(0,&thinsp;1/<em>d</em>),
+          so a single Lloyd&ndash;Max codebook per dimension serves all layers, timesteps,
+          prompts, and both image and video DiTs, with no calibration.
+      </p>
+    </div>
+  </section>
+  <!-- METHOD:END -->
+
+  <!-- ============================================================ -->
+  <!--   MAIN RESULTS                                                 -->
+  <!--   Hand-maintained.  Numbers below are copied from              -->
+  <!--   /root/donghyun/DiTurbo/paper/main.tex (tab:main-dev) so      -->
+  <!--   they stay in sync with the paper draft.                      -->
+  <!--   Figures: static/images/overall.png + static/images/latency.png -->
+  <!-- ============================================================ -->
+  <!-- RESULTS:BEGIN -->
+  <section class="section" id="results">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">Main Results</h2>
+      <p>
+        OrbitQuant matches or exceeds the best calibration-based baselines at
+        W4A4 on GenEval, and is the only PTQ method that produces usable images
+        at W2A4 &mdash; all prior methods collapse to near-zero. On Wan&nbsp;2.1-1.3B,
+        OrbitQuant leads all baselines at both W4A6 and W4A4 on Imaging,
+        Aesthetic, Scene, and Overall Consistency. No calibration data is used
+        at any bit-width or modality.
+      </p>
+
+      <div class="results-carousel" id="results-carousel" data-interval="3000">
+        <div class="results-carousel-nav">
+          <button type="button" class="results-carousel-arrow" data-dir="-1" aria-label="Previous result"><i class="fas fa-chevron-left"></i></button>
+          <div class="results-carousel-dots" aria-label="Result cards"></div>
+          <button type="button" class="results-carousel-arrow" data-dir="1" aria-label="Next result"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="results-carousel-viewport">
+          <div class="results-carousel-track">
+
+          <div class="results-slide" data-title="Image Generation: FLUX.1-dev — GenEval">
+          <div class="results-card">
+          <h3 class="title is-5 results-card-title">Image Generation: FLUX.1-dev &mdash; GenEval</h3>
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped results-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th class="has-text-centered">Bits</th>
+              <th class="has-text-right">Single</th>
+              <th class="has-text-right">Two</th>
+              <th class="has-text-right">Count</th>
+              <th class="has-text-right">Color</th>
+              <th class="has-text-right">Position</th>
+              <th class="has-text-right">Color Attr.</th>
+              <th class="has-text-right">Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>FP16 reference</td>
+              <td class="has-text-centered">&mdash;</td>
+              <td class="has-text-right">0.984</td>
+              <td class="has-text-right">0.823</td>
+              <td class="has-text-right">0.769</td>
+              <td class="has-text-right">0.771</td>
+              <td class="has-text-right">0.203</td>
+              <td class="has-text-right">0.450</td>
+              <td class="has-text-right">0.667</td>
+            </tr>
+            <tr>
+              <td>Q-DiT<span class="ref">[1]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.047</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.009</td>
+              <td class="has-text-right">0.024</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.003</td>
+              <td class="has-text-right">0.014</td>
+            </tr>
+            <tr>
+              <td>SmoothQuant<span class="ref">[2]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.003</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.003</td>
+              <td class="has-text-right">0.011</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.007</td>
+            </tr>
+            <tr>
+              <td>QuaRot<span class="ref">[3]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.634</td>
+              <td class="has-text-right">0.106</td>
+              <td class="has-text-right">0.294</td>
+              <td class="has-text-right">0.346</td>
+              <td class="has-text-right">0.025</td>
+              <td class="has-text-right">0.050</td>
+              <td class="has-text-right">0.243</td>
+            </tr>
+            <tr>
+              <td>ViDiT-Q<span class="ref">[4]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.709</td>
+              <td class="has-text-right">0.147</td>
+              <td class="has-text-right">0.325</td>
+              <td class="has-text-right">0.410</td>
+              <td class="has-text-right">0.028</td>
+              <td class="has-text-right">0.060</td>
+              <td class="has-text-right">0.280</td>
+            </tr>
+            <tr>
+              <td>SVDQuant<span class="ref">[5]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.981</td>
+              <td class="has-text-right">0.710</td>
+              <td class="has-text-right">0.610</td>
+              <td class="has-text-right">0.698</td>
+              <td class="has-text-right">0.140</td>
+              <td class="has-text-right">0.300</td>
+              <td class="has-text-right">0.573</td>
+            </tr>
+            <tr>
+              <td>adaTSQ<span class="ref">[6]</span></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">0.981</td>
+              <td class="has-text-right"><strong>0.770</strong></td>
+              <td class="has-text-right">0.640</td>
+              <td class="has-text-right">0.708</td>
+              <td class="has-text-right"><strong>0.260</strong></td>
+              <td class="has-text-right">0.350</td>
+              <td class="has-text-right">0.618</td>
+            </tr>
+            <tr class="is-selected-row">
+              <td><strong>OrbitQuant (Ours)</strong></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right"><strong>0.988</strong></td>
+              <td class="has-text-right">0.768</td>
+              <td class="has-text-right"><strong>0.691</strong></td>
+              <td class="has-text-right"><strong>0.755</strong></td>
+              <td class="has-text-right">0.178</td>
+              <td class="has-text-right"><strong>0.420</strong></td>
+              <td class="has-text-right"><strong>0.633</strong></td>
+            </tr>
+            <tr>
+              <td>QuaRot</td>
+              <td class="has-text-centered">W2A4</td>
+              <td class="has-text-right">0.006</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.001</td>
+            </tr>
+            <tr>
+              <td>SmoothQuant</td>
+              <td class="has-text-centered">W2A4</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+            </tr>
+            <tr>
+              <td>ViDiT-Q</td>
+              <td class="has-text-centered">W2A4</td>
+              <td class="has-text-right">0.006</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.000</td>
+              <td class="has-text-right">0.001</td>
+            </tr>
+            <tr class="is-selected-row">
+              <td><strong>OrbitQuant (Ours)</strong></td>
+              <td class="has-text-centered">W2A4</td>
+              <td class="has-text-right"><strong>0.956</strong></td>
+              <td class="has-text-right"><strong>0.424</strong></td>
+              <td class="has-text-right"><strong>0.481</strong></td>
+              <td class="has-text-right"><strong>0.678</strong></td>
+              <td class="has-text-right"><strong>0.110</strong></td>
+              <td class="has-text-right"><strong>0.203</strong></td>
+              <td class="has-text-right"><strong>0.475</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+          </div>
+          </div>
+
+          <div class="results-slide" data-title="Video Generation: Wan2.1-1.3B — VBench">
+          <div class="results-card">
+          <h3 class="title is-5 results-card-title">Video Generation: Wan2.1-1.3B &mdash; VBench</h3>
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped results-table" style="font-size:0.88rem;">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th class="has-text-centered">Bits</th>
+              <th class="has-text-right">Img&nbsp;↑</th>
+              <th class="has-text-right">Aes&nbsp;↑</th>
+              <th class="has-text-right">Motion&nbsp;↑</th>
+              <th class="has-text-right">Dyn&nbsp;↑</th>
+              <th class="has-text-right">BG&nbsp;↑</th>
+              <th class="has-text-right">Subj&nbsp;↑</th>
+              <th class="has-text-right">Scene&nbsp;↑</th>
+              <th class="has-text-right">Overall&nbsp;↑</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Full Prec.</td>
+              <td class="has-text-centered">&mdash;</td>
+              <td class="has-text-right">64.30</td>
+              <td class="has-text-right">58.21</td>
+              <td class="has-text-right">97.37</td>
+              <td class="has-text-right">70.28</td>
+              <td class="has-text-right">95.94</td>
+              <td class="has-text-right">93.84</td>
+              <td class="has-text-right">28.05</td>
+              <td class="has-text-right">24.67</td>
+            </tr>
+            <tr>
+              <td>SmoothQuant</td>
+              <td class="has-text-centered">W4A6</td>
+              <td class="has-text-right">53.51</td>
+              <td class="has-text-right">49.19</td>
+              <td class="has-text-right"><strong>98.01</strong></td>
+              <td class="has-text-right">34.44</td>
+              <td class="has-text-right">94.89</td>
+              <td class="has-text-right">92.66</td>
+              <td class="has-text-right">12.81</td>
+              <td class="has-text-right">22.15</td>
+            </tr>
+            <tr>
+              <td>QuaRot</td>
+              <td class="has-text-centered">W4A6</td>
+              <td class="has-text-right">56.92</td>
+              <td class="has-text-right">50.36</td>
+              <td class="has-text-right">96.94</td>
+              <td class="has-text-right">54.17</td>
+              <td class="has-text-right">95.36</td>
+              <td class="has-text-right">91.65</td>
+              <td class="has-text-right">14.88</td>
+              <td class="has-text-right">22.65</td>
+            </tr>
+            <tr>
+              <td>ViDiT-Q</td>
+              <td class="has-text-centered">W4A6</td>
+              <td class="has-text-right">56.24</td>
+              <td class="has-text-right">50.18</td>
+              <td class="has-text-right">94.81</td>
+              <td class="has-text-right">52.43</td>
+              <td class="has-text-right">89.67</td>
+              <td class="has-text-right">82.53</td>
+              <td class="has-text-right">13.45</td>
+              <td class="has-text-right">19.58</td>
+            </tr>
+            <tr>
+              <td>SVDQuant</td>
+              <td class="has-text-centered">W4A6</td>
+              <td class="has-text-right">58.16</td>
+              <td class="has-text-right">51.27</td>
+              <td class="has-text-right">97.05</td>
+              <td class="has-text-right">49.44</td>
+              <td class="has-text-right">93.74</td>
+              <td class="has-text-right">91.71</td>
+              <td class="has-text-right">14.18</td>
+              <td class="has-text-right">23.26</td>
+            </tr>
+            <tr class="is-selected-row">
+              <td><strong>OrbitQuant (Ours)</strong></td>
+              <td class="has-text-centered">W4A6</td>
+              <td class="has-text-right"><strong>61.25</strong></td>
+              <td class="has-text-right"><strong>56.08</strong></td>
+              <td class="has-text-right">97.76</td>
+              <td class="has-text-right"><strong>59.78</strong></td>
+              <td class="has-text-right"><strong>95.51</strong></td>
+              <td class="has-text-right"><strong>94.23</strong></td>
+              <td class="has-text-right"><strong>24.88</strong></td>
+              <td class="has-text-right"><strong>24.35</strong></td>
+            </tr>
+            <tr>
+              <td>SmoothQuant</td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">46.32</td>
+              <td class="has-text-right">36.33</td>
+              <td class="has-text-right">96.39</td>
+              <td class="has-text-right">51.94</td>
+              <td class="has-text-right">95.85</td>
+              <td class="has-text-right">90.39</td>
+              <td class="has-text-right">2.79</td>
+              <td class="has-text-right">15.05</td>
+            </tr>
+            <tr>
+              <td>QuaRot</td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">51.42</td>
+              <td class="has-text-right">40.49</td>
+              <td class="has-text-right">96.21</td>
+              <td class="has-text-right">52.78</td>
+              <td class="has-text-right">95.76</td>
+              <td class="has-text-right">88.80</td>
+              <td class="has-text-right">5.31</td>
+              <td class="has-text-right">17.98</td>
+            </tr>
+            <tr>
+              <td>ViDiT-Q</td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">44.51</td>
+              <td class="has-text-right">36.43</td>
+              <td class="has-text-right">96.16</td>
+              <td class="has-text-right">58.06</td>
+              <td class="has-text-right"><strong>95.92</strong></td>
+              <td class="has-text-right">89.59</td>
+              <td class="has-text-right">1.85</td>
+              <td class="has-text-right">13.11</td>
+            </tr>
+            <tr>
+              <td>SVDQuant</td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right">57.57</td>
+              <td class="has-text-right">46.30</td>
+              <td class="has-text-right">94.21</td>
+              <td class="has-text-right"><strong>72.22</strong></td>
+              <td class="has-text-right">93.16</td>
+              <td class="has-text-right">77.96</td>
+              <td class="has-text-right">12.73</td>
+              <td class="has-text-right">21.91</td>
+            </tr>
+            <tr class="is-selected-row">
+              <td><strong>OrbitQuant (Ours)</strong></td>
+              <td class="has-text-centered">W4A4</td>
+              <td class="has-text-right"><strong>58.58</strong></td>
+              <td class="has-text-right"><strong>53.41</strong></td>
+              <td class="has-text-right"><strong>97.42</strong></td>
+              <td class="has-text-right">53.89</td>
+              <td class="has-text-right">95.30</td>
+              <td class="has-text-right"><strong>92.98</strong></td>
+              <td class="has-text-right"><strong>18.81</strong></td>
+              <td class="has-text-right"><strong>23.86</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+          </div>
+          </div>
+
+          <div class="results-slide" data-title="Latency and Memory Analysis — FLUX.1-dev + Wan 2.1-1.3B">
+          <div class="results-card">
+          <h3 class="title is-5 results-card-title">Latency and Memory Analysis &mdash; FLUX.1-dev + Wan&nbsp;2.1-1.3B</h3>
+
+      <p>
+        All methods evaluated under <strong>fake quantization</strong> on NVIDIA H100. OrbitQuant is
+        the fastest W+A PTQ method on both image and video &mdash; SmoothQuant,
+        QuaRot, and ViDiT-Q run <strong>1.09&times;</strong>,
+        <strong>1.28&times;</strong>, and <strong>1.40&times;</strong> slower on
+        image. OrbitQuant matches BF16 peak memory on image; the small video
+        overhead (20.3 vs 19.3&nbsp;GB) is a fake-quant artifact.
+      </p>
+
+      <figure class="figure-block" style="margin-top:1rem; max-width: 70%; margin-left: auto; margin-right: auto;">
+        <img src="static/images/efficiency.png" alt="OrbitQuant latency and peak memory vs. SmoothQuant, QuaRot, ViDiT-Q on image (FLUX.1-dev) and video (Wan 2.1-1.3B)"
+             loading="lazy" decoding="async" />
+        <figcaption>
+          <strong>Latency and peak memory</strong> (lower-left is better).
+          Left: image generation on FLUX.1-dev. Right: video generation on
+          Wan&nbsp;2.1-1.3B. OrbitQuant is the fastest PTQ method on both
+          modalities while matching BF16 peak memory on image.
+        </figcaption>
+      </figure>
+          </div>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- RESULTS:END -->
+
+  <!-- ============================================================ -->
+  <!--   BF16 vs ORBITQUANT W4A4 (HERO COMPARISON)                    -->
+  <!--   Builder: scripts/build_hero_comparison.py                    -->
+  <!-- ============================================================ -->
+  <section class="section" id="hero-comparison">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 has-text-centered"><strong>Highlighted Video Results</strong> &mdash; Wan&nbsp;2.1-14B</h2>
+
+      <div class="content has-text-centered hero-vid-intro">
+        <p class="hero-vid-headline" style="color: var(--fg-muted); font-weight: normal;">BF16 vs OrbitQuant W4A4 on <strong style="color: var(--fg);">Wan&nbsp;2.1-14B</strong>.
+          Each row shows the same prompt under full precision (left) and
+          4-bit weight &amp; activation quantization (right).</p>
+      </div>
+
+      <!-- HERO_COMPARISON:BEGIN -->
+      <div class="vid-row hero-vid-row" data-slug="02_ink_in_water" data-prompt="Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink</p>
+        </div>
+        <div class="vid-row-grid hero-vid-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row hero-vid-row" data-slug="05_rainy_evening_car" data-prompt="A car moving slowly on an empty street, rainy evening">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A car moving slowly on an empty street, rainy evening</p>
+        </div>
+        <div class="vid-row-grid hero-vid-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row hero-vid-row" data-slug="04_turtle_swimming" data-prompt="A turtle swimming in ocean">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A turtle swimming in ocean</p>
+        </div>
+        <div class="vid-row-grid hero-vid-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+        </div>
+      </div>
+      <!-- HERO_COMPARISON:END -->
+
+      <div class="content has-text-centered hero-vid-footnote">
+        <p>Across diverse prompts involving motion, lighting, and fine
+          texture, OrbitQuant W4A4 remains visually aligned with BF16
+          outputs despite operating at substantially lower precision.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--   VIDEO GENERATION RESULTS                                     -->
+  <!--   Wan 2.1-14B at W4A4 across 5 methods.                        -->
+  <!--   Builder: scripts/build_video_gallery.py                      -->
+  <!-- ============================================================ -->
+  <section class="section" id="video-results">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 has-text-centered">Video Generation Results &mdash; Wan&nbsp;2.1-14B</h2>
+      <div class="content has-text-centered vid-intro">
+        <p><strong>Wan&nbsp;2.1-14B</strong> at W4A4 across 5 methods.
+          Each row shows the same prompt across BF16, OrbitQuant, SmoothQuant,
+          QuaRot, and ViDiT-Q. Click any video to expand for side-by-side
+          inspection.</p>
+      </div>
+
+      <!-- VIDEO_GALLERY_WAN14B:BEGIN -->
+      <div class="vid-row" data-slug="01_seine_river_van_gogh" data-prompt="A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/01_seine_river_van_gogh/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/01_seine_river_van_gogh/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/01_seine_river_van_gogh/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/01_seine_river_van_gogh/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/01_seine_river_van_gogh/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="02_ink_in_water" data-prompt="Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/02_ink_in_water/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="03_jellyfish_bioluminescent" data-prompt="A jellyfish floating through the ocean, with bioluminescent tentacles">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A jellyfish floating through the ocean, with bioluminescent tentacles</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/03_jellyfish_bioluminescent/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A jellyfish floating through the ocean, with bioluminescent tentacles"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/03_jellyfish_bioluminescent/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A jellyfish floating through the ocean, with bioluminescent tentacles"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/03_jellyfish_bioluminescent/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: A jellyfish floating through the ocean, with bioluminescent tentacles"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/03_jellyfish_bioluminescent/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: A jellyfish floating through the ocean, with bioluminescent tentacles"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/03_jellyfish_bioluminescent/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: A jellyfish floating through the ocean, with bioluminescent tentacles"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="04_turtle_swimming" data-prompt="A turtle swimming in ocean">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A turtle swimming in ocean</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/04_turtle_swimming/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: A turtle swimming in ocean"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="05_rainy_evening_car" data-prompt="A car moving slowly on an empty street, rainy evening">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">A car moving slowly on an empty street, rainy evening</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/05_rainy_evening_car/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: A car moving slowly on an empty street, rainy evening"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="06_origami_dancers" data-prompt="Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/06_origami_dancers/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/06_origami_dancers/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/06_origami_dancers/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/06_origami_dancers/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/06_origami_dancers/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance"></video>
+          </div>
+        </div>
+      </div>
+      <div class="vid-row" data-slug="07_robot_times_square" data-prompt="Robot dancing in Times Square">
+        <div class="vid-row-header">
+          <p class="vid-row-prompt">Robot dancing in Times Square</p>
+        </div>
+        <div class="vid-row-grid">
+          <div class="vid-cell">
+            <div class="vid-cell-label">BF16</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/07_robot_times_square/bf16.mp4" autoplay muted loop playsinline preload="none" aria-label="BF16 generation for prompt: Robot dancing in Times Square"></video>
+          </div>
+          <div class="vid-cell vid-cell-ours" data-ours="1">
+            <div class="vid-cell-label">OrbitQuant W4A4 (Ours)</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/07_robot_times_square/diturbo.mp4" autoplay muted loop playsinline preload="none" aria-label="OrbitQuant W4A4 (Ours) generation for prompt: Robot dancing in Times Square"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">SmoothQuant</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/07_robot_times_square/smoothquant.mp4" autoplay muted loop playsinline preload="none" aria-label="SmoothQuant generation for prompt: Robot dancing in Times Square"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">QuaRot</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/07_robot_times_square/quarot.mp4" autoplay muted loop playsinline preload="none" aria-label="QuaRot generation for prompt: Robot dancing in Times Square"></video>
+          </div>
+          <div class="vid-cell">
+            <div class="vid-cell-label">ViDiT-Q</div>
+            <video class="vid-clip" data-src="static/videos/wan14b/07_robot_times_square/viditq.mp4" autoplay muted loop playsinline preload="none" aria-label="ViDiT-Q generation for prompt: Robot dancing in Times Square"></video>
+          </div>
+        </div>
+      </div>
+      <!-- VIDEO_GALLERY_WAN14B:END -->
+
+    </div>
+
+    <!-- Shared video-row comparison modal (used by every video row above) -->
+    <div id="vid-modal" class="vid-modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <button type="button" class="vid-modal-close" aria-label="Close">&times;</button>
+      <div class="vid-modal-body">
+        <p class="vid-modal-prompt"></p>
+        <div class="vid-modal-grid"></div>
+      </div>
+    </div>
+  </section>
+<section class="section" id="highlights">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 has-text-centered">Image Generation Results &mdash; FLUX.1-dev</h2>
+      <div class="content has-text-centered qual-intro">
+        <p>The 6 prompts are shown in the same order across every quantization strength.
+          The same 5 methods appear in the same column order on every row.
+          Behavior across the three bit settings (W2A4, W3A3, W4A4) tells the qualitative story.</p>
+      </div>
+
+      <div class="qual-subsection" id="hl-w2a4">
+        <h3 class="title is-4 has-text-centered qual-subsection-title">W2A4</h3>
+        <div class="content has-text-centered qual-intro">
+          <p><strong>W2A4</strong> denotes 2-bit weight quantization and 4-bit activation quantization. Same 6 prompts in the same order across every bit setting.</p>
+        </div>
+
+        <div class="qual-table-wrap">
+          <table class="qual-table" data-bit="w2a4">
+            <thead>
+              <tr>
+                <th class="qual-th-prompt" scope="col">Prompt</th>
+                <th class="qual-th-method" scope="col">BF16</th>
+                <th class="qual-th-method qual-th-ours" scope="col">OrbitQuant W2A4 (Ours)</th>
+                <th class="qual-th-method" scope="col">QuaRot W2A4</th>
+                <th class="qual-th-method" scope="col">ViDiT-Q W2A4</th>
+                <th class="qual-th-method" scope="col">SmoothQuant W2A4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/bf16.png" data-method="BF16" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/bf16_thumb.jpg" alt="BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge OrbitQuant W2A4 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/quarot.png" data-method="QuaRot W2A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge QuaRot W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/quarot_thumb.jpg" alt="QuaRot W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge ViDiT-Q W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/viditq_thumb.jpg" alt="ViDiT-Q W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge SmoothQuant W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/01_an_elderly_fisherman_with_weathered_skin/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/bf16.png" data-method="BF16" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/bf16_thumb.jpg" alt="BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge OrbitQuant W2A4 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/quarot.png" data-method="QuaRot W2A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge QuaRot W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/quarot_thumb.jpg" alt="QuaRot W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge ViDiT-Q W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/viditq_thumb.jpg" alt="ViDiT-Q W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge SmoothQuant W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/07_a_golden_retriever_wearing_a_red_bandana/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/bf16.png" data-method="BF16" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/bf16_thumb.jpg" alt="BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge OrbitQuant W2A4 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/quarot.png" data-method="QuaRot W2A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge QuaRot W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/quarot_thumb.jpg" alt="QuaRot W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge ViDiT-Q W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/viditq_thumb.jpg" alt="ViDiT-Q W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge SmoothQuant W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16.png" data-method="BF16" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16_thumb.jpg" alt="BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge OrbitQuant W2A4 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot.png" data-method="QuaRot W2A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge QuaRot W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot_thumb.jpg" alt="QuaRot W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge ViDiT-Q W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq_thumb.jpg" alt="ViDiT-Q W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge SmoothQuant W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/bf16.png" data-method="BF16" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/bf16_thumb.jpg" alt="BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge OrbitQuant W2A4 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/quarot.png" data-method="QuaRot W2A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge QuaRot W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/quarot_thumb.jpg" alt="QuaRot W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge ViDiT-Q W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/viditq_thumb.jpg" alt="ViDiT-Q W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge SmoothQuant W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/20_a_futuristic_city_street_at_night_with_n/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/bf16.png" data-method="BF16" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/bf16_thumb.jpg" alt="BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/diturbo.png" data-method="OrbitQuant W2A4 (Ours)" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge OrbitQuant W2A4 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/diturbo_thumb.jpg" alt="OrbitQuant W2A4 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/quarot.png" data-method="QuaRot W2A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge QuaRot W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/quarot_thumb.jpg" alt="QuaRot W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/viditq.png" data-method="ViDiT-Q W2A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge ViDiT-Q W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/viditq_thumb.jpg" alt="ViDiT-Q W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant.png" data-method="SmoothQuant W2A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge SmoothQuant W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w2a4/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant_thumb.jpg" alt="SmoothQuant W2A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="qual-footnote has-text-centered">
+          Click any image to enlarge. 6 prompts &times; 5 methods.
+        </p>
+      </div>
+
+      <div class="qual-subsection" id="hl-w3a3">
+        <h3 class="title is-4 has-text-centered qual-subsection-title">W3A3</h3>
+        <div class="content has-text-centered qual-intro">
+          <p><strong>W3A3</strong> denotes 3-bit weight quantization and 3-bit activation quantization. Same 6 prompts in the same order across every bit setting.</p>
+        </div>
+
+        <div class="qual-table-wrap">
+          <table class="qual-table" data-bit="w3a3">
+            <thead>
+              <tr>
+                <th class="qual-th-prompt" scope="col">Prompt</th>
+                <th class="qual-th-method" scope="col">BF16</th>
+                <th class="qual-th-method qual-th-ours" scope="col">OrbitQuant W3A3 (Ours)</th>
+                <th class="qual-th-method" scope="col">QuaRot W3A3</th>
+                <th class="qual-th-method" scope="col">ViDiT-Q W3A3</th>
+                <th class="qual-th-method" scope="col">SmoothQuant W3A3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/bf16.png" data-method="BF16" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/bf16_thumb.jpg" alt="BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge OrbitQuant W3A3 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/quarot.png" data-method="QuaRot W3A3" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge QuaRot W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/quarot_thumb.jpg" alt="QuaRot W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge ViDiT-Q W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/viditq_thumb.jpg" alt="ViDiT-Q W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge SmoothQuant W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/01_an_elderly_fisherman_with_weathered_skin/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/bf16.png" data-method="BF16" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/bf16_thumb.jpg" alt="BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge OrbitQuant W3A3 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/quarot.png" data-method="QuaRot W3A3" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge QuaRot W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/quarot_thumb.jpg" alt="QuaRot W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge ViDiT-Q W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/viditq_thumb.jpg" alt="ViDiT-Q W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge SmoothQuant W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/07_a_golden_retriever_wearing_a_red_bandana/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/bf16.png" data-method="BF16" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/bf16_thumb.jpg" alt="BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge OrbitQuant W3A3 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/quarot.png" data-method="QuaRot W3A3" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge QuaRot W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/quarot_thumb.jpg" alt="QuaRot W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge ViDiT-Q W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/viditq_thumb.jpg" alt="ViDiT-Q W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge SmoothQuant W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16.png" data-method="BF16" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16_thumb.jpg" alt="BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge OrbitQuant W3A3 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot.png" data-method="QuaRot W3A3" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge QuaRot W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot_thumb.jpg" alt="QuaRot W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge ViDiT-Q W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq_thumb.jpg" alt="ViDiT-Q W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge SmoothQuant W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/bf16.png" data-method="BF16" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/bf16_thumb.jpg" alt="BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge OrbitQuant W3A3 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/quarot.png" data-method="QuaRot W3A3" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge QuaRot W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/quarot_thumb.jpg" alt="QuaRot W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge ViDiT-Q W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/viditq_thumb.jpg" alt="ViDiT-Q W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge SmoothQuant W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/20_a_futuristic_city_street_at_night_with_n/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/bf16.png" data-method="BF16" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/bf16_thumb.jpg" alt="BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/diturbo.png" data-method="OrbitQuant W3A3 (Ours)" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge OrbitQuant W3A3 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/diturbo_thumb.jpg" alt="OrbitQuant W3A3 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/quarot.png" data-method="QuaRot W3A3" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge QuaRot W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/quarot_thumb.jpg" alt="QuaRot W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/viditq.png" data-method="ViDiT-Q W3A3" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge ViDiT-Q W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/viditq_thumb.jpg" alt="ViDiT-Q W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant.png" data-method="SmoothQuant W3A3" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge SmoothQuant W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w3a3/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant_thumb.jpg" alt="SmoothQuant W3A3: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="qual-footnote has-text-centered">
+          Click any image to enlarge. 6 prompts &times; 5 methods.
+        </p>
+      </div>
+
+      <div class="qual-subsection" id="hl-w4a4">
+        <h3 class="title is-4 has-text-centered qual-subsection-title">W4A4</h3>
+        <div class="content has-text-centered qual-intro">
+          <p><strong>W4A4</strong> denotes 4-bit weight quantization and 4-bit activation quantization. Same 6 prompts in the same order across every bit setting.</p>
+        </div>
+
+        <div class="qual-table-wrap">
+          <table class="qual-table" data-bit="w4a4">
+            <thead>
+              <tr>
+                <th class="qual-th-prompt" scope="col">Prompt</th>
+                <th class="qual-th-method" scope="col">BF16</th>
+                <th class="qual-th-method qual-th-ours" scope="col">OrbitQuant W4A4 (Ours)</th>
+                <th class="qual-th-method" scope="col">QuaRot W4A4</th>
+                <th class="qual-th-method" scope="col">ViDiT-Q W4A4</th>
+                <th class="qual-th-method" scope="col">SmoothQuant W4A4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/bf16.png" data-method="BF16" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/bf16_thumb.jpg" alt="BF16: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge OrbitQuant W4A4 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/quarot.png" data-method="QuaRot W4A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge QuaRot W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/quarot_thumb.jpg" alt="QuaRot W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge ViDiT-Q W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/viditq_thumb.jpg" alt="ViDiT-Q W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" aria-label="Enlarge SmoothQuant W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/01_an_elderly_fisherman_with_weathered_skin/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/bf16.png" data-method="BF16" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/bf16_thumb.jpg" alt="BF16: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge OrbitQuant W4A4 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/quarot.png" data-method="QuaRot W4A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge QuaRot W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/quarot_thumb.jpg" alt="QuaRot W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge ViDiT-Q W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/viditq_thumb.jpg" alt="ViDiT-Q W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" aria-label="Enlarge SmoothQuant W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/07_a_golden_retriever_wearing_a_red_bandana/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/bf16.png" data-method="BF16" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/bf16_thumb.jpg" alt="BF16: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge OrbitQuant W4A4 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/quarot.png" data-method="QuaRot W4A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge QuaRot W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/quarot_thumb.jpg" alt="QuaRot W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge ViDiT-Q W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/viditq_thumb.jpg" alt="ViDiT-Q W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" aria-label="Enlarge SmoothQuant W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/08_a_snowy_owl_perched_on_a_branch_intricat/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16.png" data-method="BF16" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/bf16_thumb.jpg" alt="BF16: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge OrbitQuant W4A4 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot.png" data-method="QuaRot W4A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge QuaRot W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/quarot_thumb.jpg" alt="QuaRot W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge ViDiT-Q W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/viditq_thumb.jpg" alt="ViDiT-Q W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" aria-label="Enlarge SmoothQuant W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/15_a_steaming_bowl_of_ramen_with_soft_boile/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/bf16.png" data-method="BF16" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/bf16_thumb.jpg" alt="BF16: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge OrbitQuant W4A4 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/quarot.png" data-method="QuaRot W4A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge QuaRot W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/quarot_thumb.jpg" alt="QuaRot W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge ViDiT-Q W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/viditq_thumb.jpg" alt="ViDiT-Q W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" aria-label="Enlarge SmoothQuant W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/20_a_futuristic_city_street_at_night_with_n/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: A futuristic city street at night with neon advertisements, reflections on wet pavement, cyberpunk aesthetic" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="qual-prompt">
+                  <p class="qual-prompt-text">A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting</p>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/bf16.png" data-method="BF16" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/bf16_thumb.jpg" alt="BF16: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell qual-cell-ours">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/diturbo.png" data-method="OrbitQuant W4A4 (Ours)" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge OrbitQuant W4A4 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/diturbo_thumb.jpg" alt="OrbitQuant W4A4 (Ours): A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/quarot.png" data-method="QuaRot W4A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge QuaRot W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/quarot_thumb.jpg" alt="QuaRot W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/viditq.png" data-method="ViDiT-Q W4A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge ViDiT-Q W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/viditq_thumb.jpg" alt="ViDiT-Q W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+                <td class="qual-cell">
+                  <button type="button" class="qual-thumb-btn" data-full="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant.png" data-method="SmoothQuant W4A4" data-prompt="A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" aria-label="Enlarge SmoothQuant W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting">
+                    <img class="qual-thumb" loading="lazy" decoding="async" src="static/images/highlights/w4a4/21_a_humanoid_robot_reading_a_newspaper_in/smoothquant_thumb.jpg" alt="SmoothQuant W4A4: A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting" width="384" height="384" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="qual-footnote has-text-centered">
+          Click any image to enlarge. 6 prompts &times; 5 methods.
+        </p>
+      </div>
+
+    </div>
+  </section>
+  <!-- HIGHLIGHTS:END -->
+
+  <!-- ============================================================ -->
+  <!--   HIGHLIGHTED IMAGE RESULTS                                    -->
+  <!--   Curated 6-prompt subset across W2A4 / W3A3 / W4A4.           -->
+  <!--   Builder: scripts/build_highlights.py                         -->
+  <!-- ============================================================ -->
+  <!-- HIGHLIGHTS:BEGIN -->
+  
+  <!-- ============================================================ -->
+  <!--   BIBTEX                                                       -->
+  <!-- ============================================================ -->
+  <section class="section" id="bibtex">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3">BibTeX</h2>
+      <div class="bibtex-wrapper">
+        <button class="button is-small is-rounded copy-btn" id="copy-bibtex" type="button" aria-label="Copy BibTeX to clipboard">
+          <span class="icon is-small"><i class="fas fa-copy"></i></span>
+          <span>Copy</span>
+        </button>
+<pre id="bibtex-code"><code>@misc{lee2026orbitquant,
+  title         = {OrbitQuant: Data-Agnostic Quantization for Image and Video Diffusion Transformers},
+  author        = {Lee, Donghyun and Chavan, Jitesh and Nguyen, Duy and Huang, Sam and Jiang, Liming and Panda, Priyadarshini and Shukla, Saurabh},
+  year          = {2026},
+  eprint        = {XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/XXXX.XXXXX}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--   ACKNOWLEDGEMENTS                                             -->
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
+  <!--   REFERENCES                                                   -->
+  <!-- ============================================================ -->
+  <section class="section">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">References</h2>
+      <ol style="font-size: 0.92rem; line-height: 1.7; color: var(--fg-muted);">
+        <li>
+          Chen, Lei, et al. &ldquo;Q-DiT: Accurate Post-Training Quantization for Diffusion Transformers.&rdquo;
+          <em>Proceedings of the Computer Vision and Pattern Recognition Conference</em>. 2025.
+        </li>
+        <li>
+          Xiao, Guangxuan, et al. &ldquo;SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models.&rdquo;
+          <em>International Conference on Machine Learning</em>. PMLR, 2023.
+        </li>
+        <li>
+          Ashkboos, Saleh, et al. &ldquo;QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs.&rdquo;
+          <em>Advances in Neural Information Processing Systems</em> 37 (2024): 100213&ndash;100240.
+        </li>
+        <li>
+          Zhao, Tianchen, et al. &ldquo;ViDiT-Q: Efficient and Accurate Quantization of Diffusion Transformers for Image and Video Generation.&rdquo;
+          <em>arXiv preprint arXiv:2406.02540</em> (2024).
+        </li>
+        <li>
+          Li, Muyang, et al. &ldquo;SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models.&rdquo;
+          <em>arXiv preprint arXiv:2411.05007</em> (2024).
+        </li>
+        <li>
+          Zhang, Shaoqiu, et al. &ldquo;AdaTSQ: Pushing the Pareto Frontier of Diffusion Transformers via Temporal-Sensitivity Quantization.&rdquo;
+          <em>arXiv preprint arXiv:2602.09883</em> (2026).
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--   SHARED LIGHTBOX (used by Highlighted Image Results above).   -->
+  <!--   Event-delegated handler in static/js/index.js binds to       -->
+  <!--   .qual-thumb-btn so this overlay alone is enough to make      -->
+  <!--   click-to-enlarge work for every highlight thumbnail.         -->
+  <!-- ============================================================ -->
+  <div id="qual-lightbox" class="qual-lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button type="button" class="qual-lightbox-close" aria-label="Close">&times;</button>
+    <figure class="qual-lightbox-figure">
+      <img class="qual-lightbox-img" alt="" />
+      <figcaption class="qual-lightbox-caption"></figcaption>
+    </figure>
+  </div>
+
+  <!-- Minimal JS: copy-bibtex, lightbox, video lazy-load + modal. -->
+  <script src="static/js/index.js"></script>
+  <!-- Main-results card slider. -->
+  <script src="static/js/results-carousel.js"></script>
+  <!-- Interactive teaser (toggles + wipe compares). -->
+  <script src="static/js/teaser.js?v=wan-default-1"></script>
+</body>
+</html>

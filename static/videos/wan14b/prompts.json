@@ -1,0 +1,118 @@
+{
+  "kind": "video_gallery",
+  "model": "wan14b",
+  "method_order": [
+    "bf16",
+    "diturbo",
+    "smoothquant",
+    "quarot",
+    "viditq"
+  ],
+  "method_labels": {
+    "bf16": "BF16",
+    "diturbo": "OrbitQuant W4A4 (Ours)",
+    "smoothquant": "SmoothQuant",
+    "quarot": "QuaRot",
+    "viditq": "ViDiT-Q"
+  },
+  "prompts": [
+    {
+      "slug": "01_seine_river_van_gogh",
+      "prompt": "A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh",
+      "source_name": "A boat sailing leisurely along the Seine River with the Eiffel Tower in background by Vincent van Gogh",
+      "category": "aesthetic_quality",
+      "sample": 0,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "02_ink_in_water",
+      "prompt": "Color drop in water, ink swirling in water, colorful ink in water, abstraction fancy dream cloud of ink",
+      "source_name": "Motion colour drop in water, ink swirling in water, colourful ink in water, abstraction fancy dream cloud of ink.",
+      "category": "aesthetic_quality",
+      "sample": 4,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "03_jellyfish_bioluminescent",
+      "prompt": "A jellyfish floating through the ocean, with bioluminescent tentacles",
+      "source_name": "A jellyfish floating through the ocean, with bioluminescent tentacles",
+      "category": "aesthetic_quality",
+      "sample": 0,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "04_turtle_swimming",
+      "prompt": "A turtle swimming in ocean",
+      "source_name": "Turtle swimming in ocean.",
+      "category": "aesthetic_quality",
+      "sample": 0,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "05_rainy_evening_car",
+      "prompt": "A car moving slowly on an empty street, rainy evening",
+      "source_name": "A car moving slowly on an empty street, rainy evening",
+      "category": "aesthetic_quality",
+      "sample": 2,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "06_origami_dancers",
+      "prompt": "Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance",
+      "source_name": "Origami dancers in white paper, 3D render, on white background, studio shot, dancing modern dance.",
+      "category": "aesthetic_quality",
+      "sample": 1,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "slug": "07_robot_times_square",
+      "prompt": "Robot dancing in Times Square",
+      "source_name": "Robot dancing in Times Square.",
+      "category": "aesthetic_quality",
+      "sample": 4,
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    }
+  ]
+}

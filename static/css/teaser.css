@@ -1,0 +1,203 @@
+/* ============================================================
+   Interactive teaser — modality + backbone toggle pills and
+   BF16-vs-OrbitQuant wipe-compare cards. Used by the teaser
+   section in index_v2.html with static/js/teaser.js.
+   ============================================================ */
+
+/* ---- toggle pills ---- */
+.teaser-toggles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
+}
+.teaser-pill[hidden] { display: none; }
+.teaser-pill {
+  display: inline-flex;
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.25rem;
+  gap: 0.25rem;
+}
+.teaser-pill-btn {
+  border: 0;
+  background: transparent;
+  color: var(--fg-muted);
+  font-family: 'Google Sans', 'Noto Sans', system-ui, sans-serif;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.45rem 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.teaser-pill-btn:hover { color: var(--fg); }
+.teaser-pill-btn.is-active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(11, 108, 242, 0.30);
+}
+.teaser-pill-modality .teaser-pill-btn { font-size: 1.05rem; }
+.teaser-pill-backbone .teaser-pill-btn {
+  font-size: 0.88rem;
+  padding: 0.3rem 1.1rem;
+}
+.teaser-pill-backbone .teaser-pill-btn.is-active {
+  background: #1f1f1f;
+  box-shadow: none;
+}
+
+.teaser-hint {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--fg-muted);
+}
+.teaser-hint .fas { margin-right: 0.35rem; color: var(--accent); }
+
+/* ---- compare-card grid ---- */
+.teaser-panel[hidden] { display: none; }
+.teaser-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.cmp {
+  margin: 0;
+}
+.cmp-media {
+  --pos: 50%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0f1115;
+  border: 1px solid var(--rule);
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+}
+.cmp-media img,
+.cmp-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+/* BF16 layer sits on top, clipped to the left of the divider. */
+.cmp-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+/* ---- divider handle ---- */
+.cmp-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 0;
+  outline: none;
+}
+.cmp-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+}
+.cmp-grip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s ease;
+}
+.cmp-media:hover .cmp-grip,
+.cmp-handle:focus-visible .cmp-grip {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.cmp-handle:focus-visible .cmp-grip {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- corner labels ---- */
+.cmp-label {
+  position: absolute;
+  top: 0.55rem;
+  z-index: 2;
+  font-family: 'Google Sans', 'Noto Sans', system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 0.18rem 0.5rem;
+  border-radius: 4px;
+  pointer-events: none;
+}
+.cmp-label-l { left: 0.6rem; }
+.cmp-label-r {
+  right: 0.6rem;
+  background: rgba(11, 108, 242, 0.85);
+}
+
+.cmp-prompt {
+  margin-top: 0.55rem;
+  text-align: center;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--fg-muted);
+  line-height: 1.4;
+}
+
+/* ---- tagline + claim chips ---- */
+.teaser-tagline { margin-top: 1.6rem; }
+.teaser-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.teaser-chip {
+  font-family: 'Google Sans', 'Noto Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(11, 108, 242, 0.25);
+  border-radius: 999px;
+  padding: 0.28rem 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .teaser-grid { grid-template-columns: 1fr; max-width: 480px; }
+  .teaser-pill-btn { padding: 0.4rem 1rem; }
+  .teaser-pill-modality .teaser-pill-btn { font-size: 0.98rem; }
+}

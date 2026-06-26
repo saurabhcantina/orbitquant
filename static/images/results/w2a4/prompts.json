@@ -1,0 +1,192 @@
+{
+  "bit": "w2a4",
+  "method_order": [
+    "bf16",
+    "diturbo",
+    "smoothquant",
+    "quarot",
+    "viditq"
+  ],
+  "method_labels": {
+    "bf16": "BF16",
+    "diturbo": "OrbitQuant W4A4 (Ours)",
+    "smoothquant": "SmoothQuant",
+    "quarot": "QuaRot",
+    "viditq": "ViDiT-Q"
+  },
+  "skipped_methods": [
+    "contact"
+  ],
+  "excluded_indices": [
+    5,
+    10,
+    11,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    23,
+    24
+  ],
+  "prompts": [
+    {
+      "index": 0,
+      "slug": "00_studio_portrait_young_woman_freckles",
+      "prompt": "A studio portrait of a young woman with freckles, natural skin texture, soft window lighting, shallow depth of field",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 1,
+      "slug": "01_elderly_fisherman_weathered_skin_gray",
+      "prompt": "An elderly fisherman with weathered skin, gray beard, wrinkles, piercing blue eyes, golden hour lighting, ultra realistic photography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 2,
+      "slug": "02_close_up_portrait_asian_violinist",
+      "prompt": "A close-up portrait of an Asian violinist performing on stage, dramatic spotlight, detailed facial expression, realistic skin and hair",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 3,
+      "slug": "03_cozy_coffee_shop_storefront_large",
+      "prompt": "A cozy coffee shop storefront with a large sign reading \"Morning Brew Cantina\", realistic street photography, highly detailed typography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 4,
+      "slug": "04_chalkboard_menu_displaying_coffee_3",
+      "prompt": "A chalkboard menu displaying \"Coffee $3.50\", \"Croissant $4.00\", and \"Espresso $2.75\", Parisian cafe interior, photorealistic",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 6,
+      "slug": "06_bengal_tiger_walking_through_tall",
+      "prompt": "A Bengal tiger walking through tall grass, detailed fur strands, morning sunlight, wildlife photography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 7,
+      "slug": "07_golden_retriever_wearing_red_bandana",
+      "prompt": "A golden retriever wearing a red bandana, close-up portrait, detailed fur texture, shallow depth of field",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 8,
+      "slug": "08_snowy_owl_perched_branch_intricate",
+      "prompt": "A snowy owl perched on a branch, intricate feathers, winter atmosphere, ultra detailed nature photography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 9,
+      "slug": "09_gothic_cathedral_facade_intricate_stone",
+      "prompt": "A Gothic cathedral facade with intricate stone carvings and stained glass windows, architectural photography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 12,
+      "slug": "12_extreme_macro_photograph_dandelion_seed",
+      "prompt": "Extreme macro photograph of a dandelion seed head covered in morning dew droplets",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 15,
+      "slug": "15_steaming_bowl_ramen_soft_boiled",
+      "prompt": "A steaming bowl of ramen with soft-boiled egg, pork chashu, green onions, food photography",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 21,
+      "slug": "21_humanoid_robot_reading_newspaper_crowded",
+      "prompt": "A humanoid robot reading a newspaper in a crowded subway station, photorealistic, cinematic lighting",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    },
+    {
+      "index": 22,
+      "slug": "22_wooden_hanging_sign_reading_diturbo",
+      "prompt": "A wooden hanging sign reading \"DiTurbo Bistro\", carved lettering, weathered wood texture, realistic outdoor cafe",
+      "methods": [
+        "bf16",
+        "diturbo",
+        "smoothquant",
+        "quarot",
+        "viditq"
+      ]
+    }
+  ]
+}

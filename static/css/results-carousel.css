@@ -1,0 +1,122 @@
+/* ============================================================
+   Results carousel — three result cards with arrows + dots and
+   auto-advance. Used by #results in index_v2.html together with
+   static/js/results-carousel.js.
+   ============================================================ */
+
+.results-carousel {
+  margin-top: 1.5rem;
+}
+
+/* ---- nav row (‹ • • • ›) above the cards ---- */
+.results-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.results-carousel-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fg);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.results-carousel-arrow:hover,
+.results-carousel-arrow:focus-visible {
+  background: var(--bg-soft);
+  color: var(--accent);
+  outline: none;
+}
+
+.results-carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.results-carousel-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #1f1f1f;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.results-carousel-dot:hover { transform: scale(1.25); }
+.results-carousel-dot.is-active {
+  background: #f06321;
+  transform: scale(1.15);
+}
+.results-carousel-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---- sliding viewport / track ---- */
+.results-carousel-viewport {
+  overflow: hidden;
+  /* Height is driven by JS so the section hugs the active card even
+     though the three cards have very different heights. */
+  transition: height 0.45s ease;
+}
+.results-carousel-track {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.55s cubic-bezier(0.33, 0.0, 0.15, 1);
+}
+.results-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding: 0 2px; /* keep card shadow/border from being clipped */
+}
+
+/* ---- card ---- */
+.results-card {
+  background: #fbf4f3;
+  border: 1px solid #f3e2df;
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem 1.6rem;
+}
+.results-card .results-card-title {
+  color: var(--accent);
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+}
+.results-card .table-container {
+  margin-bottom: 0;
+}
+.results-card .results-table {
+  background: transparent;
+}
+.results-card .results-table td,
+.results-card .results-table th {
+  background-color: transparent;
+}
+.results-card .results-table tr.is-selected-row td {
+  background-color: var(--accent-soft);
+}
+.results-card .figure-block img {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .results-carousel-track,
+  .results-carousel-viewport {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .results-card { padding: 1.1rem 0.9rem 1.2rem; }
+}
