@@ -30,9 +30,9 @@
     .impact-statement {
       position: relative;
       text-align: center;
-      max-width: 62rem;
+      max-width: 82rem;
       margin: 0 auto;
-      padding: 2.1rem 2.6rem;
+      padding: 2.1rem 3rem;
       background: linear-gradient(135deg, #f7faff 0%, #e9f0ff 100%);
       border: 1px solid #d6e2ff;
       border-radius: 18px;
@@ -51,11 +51,14 @@
       margin-bottom: 1.05rem;
     }
     .impact-text {
-      font-size: 1.45rem;
+      font-size: 1.09rem;
       line-height: 1.62;
       font-weight: 600;
       color: #17244a;
       margin: 0;
+    }
+    .impact-text-2 {
+      margin-top: 0.9rem;
     }
     .impact-brand {
       font-weight: 800;
@@ -63,7 +66,7 @@
     }
     @media screen and (max-width: 768px) {
       .impact-statement { padding: 1.5rem 1.35rem; border-radius: 14px; }
-      .impact-text { font-size: 1.16rem; }
+      .impact-text { font-size: 0.87rem; }
     }
   </style>
 </head>
@@ -140,11 +143,14 @@
   <!--   IMPACT STATEMENT (below buttons, above demo)                 -->
   <!-- ============================================================ -->
   <section class="section" style="padding-top: 1.25rem; padding-bottom: 1.25rem;">
-    <div class="container is-max-desktop">
+    <div class="container is-max-widescreen">
       <div class="impact-statement">
         <span class="impact-kicker">Impact</span>
         <p class="impact-text">
-          <span class="impact-brand">OrbitQuant</span> makes low-bit weight-and-activation quantization practical for large image and video diffusion transformers, reducing the memory and compute cost of generation without calibration data. By preserving quality across prompts, timesteps, and modalities at aggressive bit-widths, it enables faster experimentation, cheaper training-time evaluation, and scalable deployment of next-generation generative models.
+          <span class="impact-brand">OrbitQuant</span> makes low-bit weight-and-activation quantization practical for large image and video models, reducing the memory and compute cost of generation without calibration data.
+        </p>
+        <p class="impact-text impact-text-2">
+          We apply OrbitQuant to multiple image and video models, showing that large generative models can be hosted with a much smaller memory footprint, including meaningful image inference even with 2-bit weights.
         </p>
       </div>
     </div>
